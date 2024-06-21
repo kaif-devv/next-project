@@ -1,6 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import * as fs from 'fs';
-import * as path from 'path';
+import {  Injectable } from '@nestjs/common';
 
 @Injectable()
 export class PostService {
@@ -8,20 +6,9 @@ export class PostService {
     return 'Post route demo';
   }
 
-  createFile(): string {
-    const dirPath = path.join(__dirname, '../../DATA');
-    if(!fs.existsSync(dirPath)){
-        fs.mkdirSync(dirPath);
-    }
-    const jsonFilePath = path.join(__dirname, '../../DATA/myFiles.json');
-    if (!fs.existsSync(jsonFilePath)) {
-      fs.writeFileSync(jsonFilePath, '[]');
-      return 'file created successfully';
-    } 
-  }
-
-  demo(): string {
-    let dsds: string = this.createFile();
-    return dsds;
+  createEmp(emp: {name:string}): string {
+    // const jsonFilePath = path.join(__dirname, "../DATA/myFiles.json");
+    // const empJSON: empSchema[] = require(jsonFilePath);
+    return `the name is ${emp.name}`;
   }
 }
