@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "name": "sessc",
+    "age": 23,
+    "email": "d@gmail.com",
+    "id": 1,
+    "position": "SDE1",
+    "salary": 10020,
+    "password": "$2b$10$kvnAC4y9qC.5Iv3A37zRueQYqsmDfXRh/YIJOzkJkA9dh/jIWH6u6",
+    "department": "fullstack",
+    "performance": "4"
+  },
+  {
+    "name": "ahmed",
+    "age": 23,
+    "email": "d@gmail.com",
+    "id": 2,
+    "position": "SDE1",
+    "salary": 10020,
+    "password": "$2b$10$W38plLtooSV0GHaqU0YTEuDY/Fv75fVurYUtQq3xA3Zj0gIXHTEMq",
+    "department": "fullstack",
+    "performance": "4"
+  }
+]
