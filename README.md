@@ -74,21 +74,3 @@ Nest is [MIT licensed](LICENSE).
 
 
 ////
-
-// using multiple services in one service
-
-@Injectable()
-export class PostService {
-  constructor(
-    private readonly someService: SomeService,
-    private readonly sharedService2: SharedService2, // Inject SharedService2
-  ) {}
-
-  sendDemo(): string {
-    return 'Post route demo';
-  }
-}
-
-
-//
-

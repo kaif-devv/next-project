@@ -1,13 +1,13 @@
 [
   {
-    "name": "sessc",
-    "age": 23,
+    "name": "king khan",
+    "age": 55,
     "email": "d@gmail.com",
     "id": 1,
     "position": "SDE1",
     "salary": 10020,
     "password": "$2b$10$kvnAC4y9qC.5Iv3A37zRueQYqsmDfXRh/YIJOzkJkA9dh/jIWH6u6",
-    "department": "fullstack",
+    "department": "backend",
     "performance": "4"
   },
   {
@@ -18,6 +18,17 @@
     "position": "SDE1",
     "salary": 10020,
     "password": "$2b$10$W38plLtooSV0GHaqU0YTEuDY/Fv75fVurYUtQq3xA3Zj0gIXHTEMq",
+    "department": "fullstack",
+    "performance": "4"
+  },
+  {
+    "name": "khanfdfdf",
+    "age": 23,
+    "email": "dx@gmail.com",
+    "id": 3,
+    "position": "SDE1",
+    "salary": 10020,
+    "password": "$2b$10$NHBdmc0JAlrNHyYlcrV35.NOhjdYFL9SLzrISswrgEfVOz1Vg0CjK",
     "department": "fullstack",
     "performance": "4"
   }

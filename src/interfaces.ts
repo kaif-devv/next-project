@@ -26,6 +26,11 @@ export interface updateSchema  {
   prevPassword?: any;
 };
 
+export interface loginSchema{
+  email: string,
+  password: string
+}
+
 export interface historySchema  {
   id: number;
   empHistoryId: number;

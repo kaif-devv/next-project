@@ -1,8 +1,7 @@
 import { Controller, Get, Query, ParseIntPipe, Param } from '@nestjs/common';
 import { GetService } from './get.service';
-import { SharedService } from 'src/shared/shared.service.service';
+import { SharedService } from 'src/shared/shared.service';
 import { empSchema } from 'src/interfaces';
-
 @Controller()
 export class GetController {
   constructor(

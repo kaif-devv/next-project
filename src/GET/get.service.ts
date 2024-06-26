@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { empSchema } from 'src/interfaces';
-import { SharedService } from 'src/shared/shared.service.service';
+import { SharedService } from 'src/shared/shared.service';
 
 @Injectable()
 export class GetService {
