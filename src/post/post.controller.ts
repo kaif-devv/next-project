@@ -5,23 +5,21 @@ import { empSchema, loginSchema } from '../interfaces';
 @Controller()
 export class PostController {
   constructor(private readonly postService: PostService) {}
-
-  @Get('trial')
-  postRoute(): string {
-    return this.postService.sendDemo();
-  }
-
+  //Create Route for new employee
   @Post('create')
   createEmp(@Body() emp: empSchema): string {
     return this.postService.createEmp(emp);
   }
-@Post('login')
+  //Login route to generate the token
+  @Post('login')
   login(@Body() info: loginSchema) {
-    let token = this.postService.login(info);
-    if (token) {
-      return `Login Success the token is ${token}`;
-    } else {
-      return `incorrect credentials`;
-    }
+    let promise = this.postService.login(info);
+    return promise;
+  }
+
+  //testing route
+  @Post('temp')
+  try() {
+    return this.postService.mdwService();
   }
 }

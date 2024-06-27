@@ -7,7 +7,7 @@ export interface empSchema {
   salary: number;
   password: string;
   department: string;
-  performance: string;
+  performance: number;
   joinDate?: string;
   prevpassword?: any;
 }

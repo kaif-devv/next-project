@@ -1,5 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
+import { PostService } from './post.service';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -16,4 +17,15 @@ export class createFileMiddleware implements NestMiddleware {
     } 
     next();
   }
+}
+//TESTING MIDDLEWARE USING THE SERVICE
+@Injectable()
+export class testMDW implements NestMiddleware{
+  constructor(private readonly shared:PostService){}
+  async use(req: any, res: any, next: (error?: any) => void) {
+    let i = await this.shared.mdwService();
+    if(i) res.send("WORKING")
+      else res.send("NOT WORKING")
+  }
+  
 }

@@ -6,9 +6,8 @@ import * as fs from 'fs';
 export class PutService {
   constructor(private readonly shared: SharedService) {}
   updateEmp(id: number, emp: updateSchema) {
-    
-    const dataPath = this.shared.dataPath();
-    const empJson: empSchema[] = this.shared.getJson();
+    const dataPath = this.shared.dataPath(); // using the shared service for path
+    const empJson: empSchema[] = this.shared.getJson(); // using the shared service for employee data
     const indx: number = empJson.findIndex((e) => e.id === id);
     if (emp.name) empJson[indx].name = emp.name;
     if (emp.age) empJson[indx].age = emp.age;
@@ -21,6 +20,7 @@ export class PutService {
       let hash: string = this.shared.hashPassword(emp.password);
       empJson[indx].department = hash;
     }
+    //Writing the file
     fs.writeFileSync(dataPath, JSON.stringify(empJson));
     return 'Employee Updated Successfully';
   }

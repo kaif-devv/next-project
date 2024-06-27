@@ -6,18 +6,13 @@ import * as fs from 'fs';
 export class DeleteService {
   constructor(private readonly shared: SharedService) {}
 
-  // Method to delete an employee by ID
   delById(id: number) {
-    // Get the employee data from the shared service
     const empjson = this.shared.getJson();
-
-    // Filter out the employee with the specified ID
+    let idx: number = empjson.findIndex((e) => e.id === id);
+    if (idx === -1) return 'Employee Doesnt exists';
     const data = empjson.filter((e) => e.id !== id);
-
-    // Write the updated data back to the file
     fs.writeFileSync(this.shared.dataPath(), JSON.stringify(data));
 
-    // Return success message
     return 'Employee deleted successfully';
   }
 }

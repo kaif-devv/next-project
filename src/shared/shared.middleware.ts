@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { SharedService } from './shared.service';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class fieldsMW implements NestMiddleware {
@@ -130,19 +130,14 @@ export class perfMW implements NestMiddleware {
 }
 
 export class jwtVerify implements NestMiddleware {
-  constructor(private readonly shared: SharedService) {}
   use(req: Request, res: Response, next: NextFunction) {
-    let token = req.header['jwt_key'];
-    console.log(token);
-    if (!token) {
-      res.send('Invalid token');
-    } else {
-      let proceed = this.shared?.vToken(token);
-      if (proceed) {
-        next();
+    const token: string = req.header('jwt_key');
+    jwt.verify(token, process.env.JWT_SECRET_KEY, function (error) {
+      if (error) {
+        res.send('Invalid  or wrong credentials');
       } else {
-        res.send('Invalid User');
+        return next();
       }
-    }
+    });
   }
 }

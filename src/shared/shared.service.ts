@@ -50,13 +50,5 @@ export class SharedService {
     }
   }
 
-  vToken(token: string) {
-    try {
-      let proceed = jwt.verify(token, process.env.JWT_SECRET_KEY);
-      return proceed;
-    } catch (error) {
-      return error
-    }
-   
-  }
+  
 }

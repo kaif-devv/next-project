@@ -7,11 +7,8 @@ import { SharedService } from 'src/shared/shared.service';
 @Injectable()
 export class PostService {
   constructor(private readonly shared: SharedService) {}
-  sendDemo(): string {
-    let x = 'hi';
-    return this.shared.getShared(x);
-  }
 
+ 
   createEmp(emp: empSchema): string {
     try {
       const jsonFilePath = path.join(__dirname, '../../DATA/myFiles.json');
@@ -32,7 +29,7 @@ export class PostService {
         salary: emp.salary,
         password: hashed,
         department: emp.department,
-        performance: '4',
+        performance: 4,
       };
       empJSON.push(newEmp);
       fs.writeFileSync(jsonFilePath, JSON.stringify(empJSON));
@@ -43,12 +40,20 @@ export class PostService {
   }
 
   login(info: loginSchema) {
+ 
     let empJson = this.shared.getJson();
     //Finding the exact employee to get prev password
     let prevPass = empJson.find((e) => e.email === info.email).password;
     let proceed = this.shared.verifyPass(info.password, prevPass);
     let token = this.shared.gToken(info.email);
-    if(proceed) return token
-      else return null
+    if (proceed) {
+      return `Login Success the token is ${token}`;
+    } else {
+      return 'Invalid Credentials';
+    }
+  }
+//test
+  mdwService(){
+    return true
   }
 }
