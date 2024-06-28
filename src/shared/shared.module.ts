@@ -1,8 +1,7 @@
 import {  Module} from '@nestjs/common';
 import { SharedService } from './shared.service';
-import { jwtVerify } from './shared.middleware';
 @Module({
-  providers: [SharedService,jwtVerify],
+  providers: [SharedService],
   exports: [SharedService],
 })
 export class SharedModule {

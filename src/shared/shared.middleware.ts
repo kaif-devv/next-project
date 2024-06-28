@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import * as jwt from 'jsonwebtoken';
+// import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class fieldsMW implements NestMiddleware {
@@ -129,15 +129,15 @@ export class perfMW implements NestMiddleware {
   }
 }
 
-export class jwtVerify implements NestMiddleware {
-  use(req: Request, res: Response, next: NextFunction) {
-    const token: string = req.header('jwt_key');
-    jwt.verify(token, process.env.JWT_SECRET_KEY, function (error) {
-      if (error) {
-        res.send('Invalid  or wrong credentials');
-      } else {
-        return next();
-      }
-    });
-  }
-}
+// export class jwtVerify implements NestMiddleware {
+//   use(req: Request, res: Response, next: NextFunction) {
+//     const token: string = req.header('jwt_key');
+//     jwt.verify(token, process.env.JWT_SECRET_KEY, function (error) {
+//       if (error) {
+//         res.send('Invalid  or wrong credentials');
+//       } else {
+//         return next();
+//       }
+//     });
+//   }
+// }
