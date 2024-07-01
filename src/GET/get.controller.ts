@@ -29,6 +29,7 @@ export class GetController {
   getId(@Param('id', ParseIntPipe) id: number) {
     return this.getService.getById(id);
   }
+  
   //Search by name
   @Get('/read')
   getName(@Query('name') name: string): empSchema[] {

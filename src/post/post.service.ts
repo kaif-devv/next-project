@@ -7,8 +7,6 @@ import { SharedService } from 'src/shared/shared.service';
 @Injectable()
 export class PostService {
   constructor(private readonly shared: SharedService) {}
-
- 
   createEmp(emp: empSchema): string {
     try {
       const jsonFilePath = path.join(__dirname, '../../DATA/myFiles.json');
@@ -29,7 +27,7 @@ export class PostService {
         salary: emp.salary,
         password: hashed,
         department: emp.department,
-        performance: 4,
+        performance: 3.5,
       };
       empJSON.push(newEmp);
       fs.writeFileSync(jsonFilePath, JSON.stringify(empJSON));

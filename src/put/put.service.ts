@@ -9,6 +9,7 @@ export class PutService {
     const dataPath = this.shared.dataPath(); // using the shared service for path
     const empJson: empSchema[] = this.shared.getJson(); // using the shared service for employee data
     const indx: number = empJson.findIndex((e) => e.id === id);
+    if (indx === -1) return 'Employee doesnt exists with that id';
     if (emp.name) empJson[indx].name = emp.name;
     if (emp.age) empJson[indx].age = emp.age;
     if (emp.email) empJson[indx].email = emp.email;
