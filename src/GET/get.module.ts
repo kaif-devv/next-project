@@ -4,6 +4,7 @@ import { GetController } from './get.controller';
 import { GetService } from './get.service';
 import { SharedModule } from 'src/shared/shared.module';
 // import { jwtVerify } from 'src/shared/shared.middleware';
+import { fileExistMW } from 'src/shared/shared.middleware';
 
 @Module({
   imports: [SharedModule],
@@ -12,6 +13,6 @@ import { SharedModule } from 'src/shared/shared.module';
 })
 export class GetModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    // consumer.apply(jwtVerify).exclude('guard').forRoutes(GetController);
+    consumer.apply(fileExistMW).forRoutes(GetController);
   }
 }

@@ -20,9 +20,10 @@ export class SharedService {
 
   // Accessing Json Data
   getJson() {
-    const jsonFilePath = path.join(__dirname, '../../DATA/myFiles.json');
-    const empJSON: empSchema[] = require(jsonFilePath);
-    return empJSON;
+    
+      const jsonFilePath = path.join(__dirname, '../../DATA/myFiles.json');
+      const empJSON: empSchema[] = require(jsonFilePath);
+      return empJSON;
   }
 
   //Bcrypting password
@@ -49,6 +50,4 @@ export class SharedService {
       return `Error Occured: ${error}`;
     }
   }
-
-  
 }

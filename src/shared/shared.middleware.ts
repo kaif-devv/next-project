@@ -1,8 +1,24 @@
-// import { Injectable, NestMiddleware } from '@nestjs/common';
-// import { Request, Response, NextFunction } from 'express';
+import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Request, Response, NextFunction } from 'express';
+import * as path from 'path';
+import { SharedService } from './shared.service';
 // // import * as jwt from 'jsonwebtoken';
 
-// @Injectable()
+@Injectable()
+export class fileExistMW implements NestMiddleware {
+  // constructor(private readonly shared: SharedService) {}
+  use(req: Request, res: Response, next: NextFunction) {
+    const jsonFilePath = path.join(__dirname, '../../DATA/myFiles.json');
+    try {
+      require.resolve(jsonFilePath);
+      next();
+    } catch (error) {
+      res.send('File does not exist');
+    }
+  }
+}
+
+
 // export class fieldsMW implements NestMiddleware {
 //   use(req: Request, res: Response, next: NextFunction) {
 //     const { name, age, email, password, salary, position, department } =
@@ -82,7 +98,6 @@
 //     }
 //   }
 // }
-
 
 // type Department = 'frontend' | 'backend' | 'fullstack';
 // export class dptMW implements NestMiddleware {

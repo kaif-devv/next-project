@@ -5,7 +5,7 @@ import { PutModule } from './put/put.module';
 import { DeleteModule } from './delete/delete.module';
 
 @Module({
-  imports: [GetModule, PostModule,PutModule, DeleteModule],
+  imports: [GetModule, PostModule, PutModule, DeleteModule],
   controllers: [],
   providers: [],
 })
