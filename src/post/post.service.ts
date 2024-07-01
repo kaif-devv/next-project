@@ -40,8 +40,10 @@ export class PostService {
   login(info: loginSchema) {
  
     let empJson = this.shared.getJson();
-    //Finding the exact employee to get prev password
-    let prevPass = empJson.find((e) => e.email === info.email).password;
+    //Finding the exact employee to get prev 
+    let user = empJson.find((e) => e.email === info.email);
+    if(!user) return 'Invalid email address'
+    let prevPass = user.password;
     let proceed = this.shared.verifyPass(info.password, prevPass);
     let token = this.shared.gToken(info.email);
     if (proceed) {
