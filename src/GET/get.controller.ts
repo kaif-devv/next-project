@@ -1,7 +1,7 @@
 import { Controller, Get, Query, ParseIntPipe, Param, UseGuards } from '@nestjs/common';
 import { GetService } from './get.service';
 import { SharedService } from 'src/shared/shared.service';
-import { empSchema } from 'src/interfaces';
+import { empInterface } from 'src/interfaces';
 import { JwtGuard } from 'src/auth/auth.guard';
 
 @Controller()
@@ -20,10 +20,11 @@ export class GetController {
 
   //Get all the employees
   @Get('/all')
-  getAll(): empSchema[] {
+  getAll(): empInterface[] {
     const emp = this.shared.getJson();
     return emp;
   }
+
   //Search by ID
   @Get('/search/:id')
   getId(@Param('id', ParseIntPipe) id: number) {
@@ -32,7 +33,7 @@ export class GetController {
   
   //Search by name
   @Get('/read')
-  getName(@Query('name') name: string): empSchema[] {
+  getName(@Query('name') name: string): empInterface[] {
     const data = this.getService.getByName(name);
     return data;
   }
@@ -98,5 +99,12 @@ export class GetController {
   @Get('report')
   getCsv() {
     return this.getService.geCsv();
+  }
+
+  //Get History
+
+  @Get('/history/:id')
+  getHistory(@Param('id',ParseIntPipe) id:number){
+   return this.getService.getHistory(id)
   }
 }

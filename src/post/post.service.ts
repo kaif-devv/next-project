@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { empSchema, loginSchema } from '../interfaces';
+import { empInterface, loginInterface } from '../interfaces';
 import * as path from 'path';
 import * as fs from 'fs';
 import { SharedService } from 'src/shared/shared.service';
@@ -7,10 +7,10 @@ import { SharedService } from 'src/shared/shared.service';
 @Injectable()
 export class PostService {
   constructor(private readonly shared: SharedService) {}
-  createEmp(emp: empSchema): string {
+  createEmp(emp: empInterface): string {
     try {
       const jsonFilePath = path.join(__dirname, '../../DATA/myFiles.json');
-      const empJSON: empSchema[] = this.shared.getJson();
+      const empJSON: empInterface[] = this.shared.getJson();
       let proceed = empJSON.findIndex((e) => e.email === emp.email);
       if (proceed !== -1) {
         return 'Employee with this email already exists';
@@ -37,7 +37,7 @@ export class PostService {
     }
   }
 
-  login(info: loginSchema) {
+  login(info: loginInterface) {
  
     let empJson = this.shared.getJson();
     //Finding the exact employee to get prev 

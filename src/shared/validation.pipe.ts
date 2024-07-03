@@ -8,7 +8,7 @@ type Department = 'frontend' | 'backend' | 'fullstack';
 type Position = 'SDE1' | 'SDE2' | 'SDE3';
 
 @Injectable()
-export class FileExistPipe implements PipeTransform {
+export class FiledsExistPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     const { name, age, email, password, salary, position, department } = value;
     if (

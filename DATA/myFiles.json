@@ -1,35 +1,35 @@
 [
   {
-    "name": "king khan",
+    "name": "nate",
     "age": 55,
     "email": "d@gmail.com",
     "id": 1,
     "position": "SDE1",
     "salary": 10020,
     "password": "$2b$10$kvnAC4y9qC.5Iv3A37zRueQYqsmDfXRh/YIJOzkJkA9dh/jIWH6u6",
-    "department": "backend",
+    "department": "frontend",
     "performance": 4
   },
   {
-    "name": "ahmed",
+    "name": "lisa",
     "age": 23,
     "email": "d@gmail.com",
     "id": 2,
     "position": "SDE1",
     "salary": 90020,
     "password": "$2b$10$W38plLtooSV0GHaqU0YTEuDY/Fv75fVurYUtQq3xA3Zj0gIXHTEMq",
-    "department": "fullstack",
+    "department": "backend",
     "performance": 3
   },
   {
-    "name": "khanfdfdf",
+    "name": "nate-buzz",
     "age": 23,
     "email": "dx@gmail.com",
     "id": 3,
     "position": "SDE1",
     "salary": 10020,
     "password": "$2b$10$NHBdmc0JAlrNHyYlcrV35.NOhjdYFL9SLzrISswrgEfVOz1Vg0CjK",
-    "department": "frontend",
+    "department": "backend",
     "performance": 3
   },
   {
