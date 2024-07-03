@@ -2,23 +2,20 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
 import { SharedModule } from 'src/shared/shared.module';
-// import { fieldsMW,nameMW,passMW,ageMW,dptMW,posMW,perfMW, } from 'src/shared/shared.middleware';
 import { createFileMiddleware, testMDW } from './post.middleware';
+import { MongooseModule } from '@nestjs/mongoose';
+import { EmpSchema } from 'src/Schemas/emp.schema';
 
 @Module({
-  imports: [SharedModule],
+  imports: [
+    SharedModule,
+    MongooseModule.forFeature([{ name: 'Employee', schema: EmpSchema }]),
+  ],
   controllers: [PostController],
-  providers: [PostService,testMDW],
+  providers: [PostService, testMDW],
 })
-
 export class PostModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(createFileMiddleware
-        // fieldsMW
-        // ,nameMW,passMW,ageMW,dptMW,posMW,perfMW
-      )
-      .forRoutes('create')
-      .apply(testMDW).forRoutes('temp') // Testing middleware
+    consumer.apply(createFileMiddleware).forRoutes('create').apply(testMDW).forRoutes('temp'); // Testing middleware
   }
 }
