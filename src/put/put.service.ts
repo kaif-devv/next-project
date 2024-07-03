@@ -23,6 +23,6 @@ export class PutService {
     }
     //Writing the file
     fs.writeFileSync(dataPath, JSON.stringify(empJson));
-    return 'Employee Updated Successfully';
+    return 'Employee Updated Successfully'
   }
 }
