@@ -10,7 +10,6 @@ export class DeleteController {
 
   @Delete('/:id')
   deleteById(@Param('id', ParseIntPipe) id: number): string {
-    console.log("The id is "+ id);
     return this.deleteService.delById(id);
   }
 }

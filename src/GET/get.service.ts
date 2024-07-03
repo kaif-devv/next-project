@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { empSchema } from 'src/interfaces';
+import { empInterface, historyInterface } from 'src/interfaces';
 import { SharedService } from 'src/shared/shared.service';
 import * as csvJSON from 'csvjson';
 import * as path from 'path';
 import * as fs from 'fs';
+import { share } from 'rxjs';
 @Injectable()
 export class GetService {
   constructor(private readonly shared: SharedService) {}
@@ -11,16 +12,16 @@ export class GetService {
   // static variable to get the employee data using the service getjson()
 
   //Get eployee by ID
-  getById(id: number): empSchema {
-    const empData: empSchema[] = this.shared.getJson();
+  getById(id: number): empInterface {
+    const empData: empInterface[] = this.shared.getJson();
 
-    let ind = empData.findIndex((e) => e.id === id)
+    let ind: number = empData.findIndex((e) => e.id === id);
     return empData[ind];
   }
 
   //Get employee by name
-  getByName(name: string): empSchema[] {
-    const empData: empSchema[] = this.shared.getJson();
+  getByName(name: string): empInterface[] {
+    const empData: empInterface[] = this.shared.getJson();
 
     let data = empData.filter((e) => e.name === name);
     return data;
@@ -28,11 +29,10 @@ export class GetService {
 
   //Get minimum and maximum salary for the department
   getDptSal(dpt: string) {
-    const empData: empSchema[] = this.shared.getJson();
+    const empData: empInterface[] = this.shared.getJson();
 
     let filtered = empData.filter((e) => e.department === dpt);
     filtered.sort((a, b) => b.salary - a.salary);
-    console.log(filtered);
     let maxSal: number = filtered[0].salary;
     let minSal: number = filtered[filtered.length - 1].salary;
     return `The max and min salary of department ${dpt} is ${maxSal} and ${minSal}`;
@@ -40,16 +40,16 @@ export class GetService {
 
   //No of emp in DPT
   getDptCount(dpt: string) {
-    const empData: empSchema[] = this.shared.getJson();
+    const empData: empInterface[] = this.shared.getJson();
 
     let filtered = empData.filter((e) => e.department === dpt);
     return `The number of employees in a department are ${filtered.length}`;
   }
 
   getDpt(dpt: string) {
-    const empData: empSchema[] = this.shared.getJson();
+    const empData: empInterface[] = this.shared.getJson();
 
-    let data = empData.filter((e) => e.department === dpt);
+    let data: empInterface[] = empData.filter((e) => e.department === dpt);
     if (data.length === 0) return `No employees in the department ${dpt}`;
     return data;
   }
@@ -57,7 +57,7 @@ export class GetService {
   //Get by perfoemance
 
   getByPer(per: number) {
-    const empData: empSchema[] = this.shared.getJson();
+    const empData: empInterface[] = this.shared.getJson();
 
     let data = empData.filter((e) => e.performance >= per);
     if (data.length === 0) return 'no employee with the performance range';
@@ -66,7 +66,7 @@ export class GetService {
 
   //Get top three employees by Sal
   getTopThree() {
-    const empData: empSchema[] = this.shared.getJson();
+    const empData: empInterface[] = this.shared.getJson();
 
     let empJSON = empData;
     let count = 0;
@@ -88,7 +88,7 @@ export class GetService {
 
   //Get avg sal of all emp in dpt
   avgSal() {
-    const empData: empSchema[] = this.shared.getJson();
+    const empData: empInterface[] = this.shared.getJson();
 
     let empJSON = empData;
     const dptObj: { [key: string]: number[] } = {}; // Add index signature to dptObj
@@ -98,7 +98,6 @@ export class GetService {
     empJSON.map((e: { department: string; salary: number }) => {
       dptObj[e.department].push(e.salary);
     });
-    console.log(dptObj);
 
     let responseString: string = '';
     Object.keys(dptObj).forEach((key) => {
@@ -115,7 +114,7 @@ export class GetService {
 
   //Get average salaries of all the employees
   getAvg() {
-    const empData: empSchema[] = this.shared.getJson();
+    const empData: empInterface[] = this.shared.getJson();
 
     let sum = 0;
     empData.map((e) => {
@@ -128,7 +127,7 @@ export class GetService {
   //Get Paginated
 
   getPaginated(page: number) {
-    const empData: empSchema[] = this.shared.getJson();
+    const empData: empInterface[] = this.shared.getJson();
 
     empData.sort((a, b) => a.id - b.id);
     let data = empData.slice(3 * (page - 1), 3 * page);
@@ -138,7 +137,7 @@ export class GetService {
   //Get Dynamic fields
 
   getFieldSorted(id: number, field: string) {
-    const empData: empSchema[] = this.shared.getJson();
+    const empData: empInterface[] = this.shared.getJson();
 
     if (id === 1) {
       let data = empData.sort((a, b) => a[field] - b[field]);
@@ -150,10 +149,10 @@ export class GetService {
 
   //Get CSV data
   geCsv() {
-    const empData: empSchema[] = this.shared.getJson();
+    const empData: empInterface[] = this.shared.getJson();
 
     let downloadPath: string = path.join(__dirname, '../../DATA/report.csv');
-    const empJSON: empSchema[] = empData;
+    const empJSON: empInterface[] = empData;
     const dptObj: { [key: string]: number[] } = {};
     empJSON.map((e: { department: string }) => {
       dptObj[e.department] = [];
@@ -184,5 +183,12 @@ export class GetService {
     const csvData = csvJSON.toCSV(JSON.stringify(csvObj), { headers: 'key' });
     fs.writeFileSync(downloadPath, csvData);
     return csvData;
+  }
+
+  //Get History
+  getHistory(id: number) {
+    let historyJson: historyInterface[] = this.shared.getHistory();
+    let data = historyJson.filter((e) => e.id === id);
+    return data[data.length - 1];
   }
 }

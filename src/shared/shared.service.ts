@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { empSchema } from 'src/interfaces';
+import { empInterface, historyInterface } from 'src/interfaces';
 import * as bcrypt from 'bcrypt';
 import * as path from 'path';
 import * as jwt from 'jsonwebtoken';
@@ -18,13 +18,25 @@ export class SharedService {
     return jsonFilePath;
   }
 
+  historyPath(){
+    const historyPath = path.join(__dirname, '../../DATA/history.json');
+    return historyPath;
+  }
+
   // Accessing Json Data
   getJson() {
     
       const jsonFilePath = path.join(__dirname, '../../DATA/myFiles.json');
-      const empJSON: empSchema[] = require(jsonFilePath);
+      const empJSON: empInterface[] = require(jsonFilePath);
       return empJSON;
   }
+
+  getHistory() {
+    
+    const history = path.join(__dirname, '../../DATA/history.json');
+    const historyJSON: historyInterface[] = require(history);
+    return historyJSON;
+}
 
   //Bcrypting password
 

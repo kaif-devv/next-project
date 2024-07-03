@@ -1,4 +1,4 @@
-export interface empSchema {
+export interface empInterface {
   name: string;
   age: number;
   email: string;
@@ -12,7 +12,7 @@ export interface empSchema {
   prevpassword?: any;
 }
 
-export interface updateSchema  {
+export interface updateInterface  {
   id?: number;
   name?: string;
   age?: number;
@@ -21,17 +21,17 @@ export interface updateSchema  {
   salary?: number;
   password?: string;
   department?: string;
-  performance?: string;
+  performance?: number;
   joinDate?: string;
   prevPassword?: any;
 };
 
-export interface loginSchema{
+export interface loginInterface{
   email: string,
   password: string
 }
 
-export interface historySchema  {
+export interface historyInterface  {
   id: number;
   empHistoryId: number;
   updatedOn: string;
@@ -56,8 +56,8 @@ export interface historySchema  {
     currentPosition: string;
   };
   performance?: {
-    prevPerformance: string | number;
-    currentPerformance: string | number;
+    prevPerformance:  number;
+    currentPerformance:  number;
   };
   email?: {
     prevEmail: string;

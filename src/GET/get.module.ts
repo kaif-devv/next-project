@@ -3,7 +3,6 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { GetController } from './get.controller';
 import { GetService } from './get.service';
 import { SharedModule } from 'src/shared/shared.module';
-// import { jwtVerify } from 'src/shared/shared.middleware';
 import { fileExistMW } from 'src/shared/shared.middleware';
 
 @Module({
