@@ -33,7 +33,6 @@ export class GetService {
 
     let filtered = empData.filter((e) => e.department === dpt);
     filtered.sort((a, b) => b.salary - a.salary);
-    console.log(filtered);
     let maxSal: number = filtered[0].salary;
     let minSal: number = filtered[filtered.length - 1].salary;
     return `The max and min salary of department ${dpt} is ${maxSal} and ${minSal}`;
@@ -99,7 +98,6 @@ export class GetService {
     empJSON.map((e: { department: string; salary: number }) => {
       dptObj[e.department].push(e.salary);
     });
-    console.log(dptObj);
 
     let responseString: string = '';
     Object.keys(dptObj).forEach((key) => {

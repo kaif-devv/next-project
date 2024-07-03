@@ -26,12 +26,40 @@ export class FiledsExistPipe implements PipeTransform {
   }
 }
 
+export class UpdateFiledsExistPipe implements PipeTransform {
+  transform(value: any, metadata: ArgumentMetadata) {
+    console.log(value);
+    
+    const { name, age, email, password, salary, position, department } = value;
+
+    if (
+      !name &&
+      !age &&
+      !position &&
+      !password &&
+      !salary &&
+      !email &&
+      !department
+    ) {
+      
+      throw new BadRequestException('Atleast one Field is required');
+    }
+    return value;
+  }
+}
+
+
+
+
 export class DataValidationPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     //Name verification
     let name: string = value.name;
-    if (name && name.charAt(0) <= '9') {
-      throw new BadRequestException('Name should start with a letter');
+    if (name) {
+      if (name.charAt(0) <= '9')
+        throw new BadRequestException('Name should start with a letter');
+      if (name.length < 3)
+        throw new BadRequestException('Name should contain atleast 3 letters');
     }
 
     //Password verification
@@ -89,7 +117,7 @@ export class DataValidationPipe implements PipeTransform {
     }
     //Performance verification
 
-    let perf = value.performance;
+    let perf: number = value.performance;
     if (perf && (perf < 0 || perf > 5)) {
       throw new BadRequestException(
         'Enter the performance range between 0 and 5',
