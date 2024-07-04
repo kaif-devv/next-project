@@ -4,12 +4,12 @@ import { PostService } from './post.service';
 import { SharedModule } from 'src/shared/shared.module';
 import { createFileMiddleware, testMDW } from './post.middleware';
 import { MongooseModule } from '@nestjs/mongoose';
-import { EmpSchema } from 'src/Schemas/emp.schema';
+import { EmployeeSchema } from 'src/Schemas/emp.schema';
 
 @Module({
   imports: [
     SharedModule,
-    MongooseModule.forFeature([{ name: 'Employee', schema: EmpSchema }]),
+    MongooseModule.forFeature([{ name: 'Employee', schema: EmployeeSchema }]),
   ],
   controllers: [PostController],
   providers: [PostService, testMDW],

@@ -21,4 +21,4 @@ export class Employee {
   performance: number;
 }
 
-export const EmpSchema = SchemaFactory.createForClass(Employee);
+export const EmployeeSchema = SchemaFactory.createForClass(Employee);

@@ -32,10 +32,5 @@ export class PostController {
     return 'PIPE WORKING';
   }
 
-  //MONGO
-
-  @Post('mongo')
-  createMon(@Body() emp: empSchema) {
-    return this.postService.sendMongo(emp);
-  }
+ 
 }

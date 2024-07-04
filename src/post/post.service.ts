@@ -3,7 +3,7 @@ import { empInterface, loginInterface } from '../interfaces';
 import * as path from 'path';
 import * as fs from 'fs';
 import { SharedService } from 'src/shared/shared.service';
-import { EmpSchema } from 'src/Schemas/emp.schema';
+
 @Injectable()
 export class PostService {
   employeeModel: any;
@@ -58,8 +58,4 @@ export class PostService {
     return true
   }
 
-  async sendMongo(emp: empSchema): Promise<typeof EmpSchema> { // Changed return type
-    const newEmp = new this.employeeModel(emp);
-    return newEmp.save();
-  }
 }
