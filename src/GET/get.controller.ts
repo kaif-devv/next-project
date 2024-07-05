@@ -97,7 +97,7 @@ export class GetController {
   //Generate a CSV
 
   @Get('report')
-  getCsv() {
+  getCsv() { 
     return this.getService.geCsv();
   }
 
