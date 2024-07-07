@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEmail, IsIn, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 export class CreateEmpDto {
   @IsNotEmpty()
   @IsString()
@@ -56,3 +56,10 @@ export class LoginDto {
   @IsNotEmpty()
   password: string;
 }
+
+export class dptDto {
+  @IsNotEmpty()
+  @IsIn(['frontend', 'backend', 'fullstack'])
+  department: string;
+}
+
