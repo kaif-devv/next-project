@@ -4,14 +4,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose'; // Import Model from mongoose
 import { Employee } from 'src/Schemas/emp.schema';
 import { SharedService } from 'src/shared/shared.service';
-import e from 'express';
 
 @Injectable()
 export class EmpService {
   constructor(
     private readonly shared: SharedService,
     @InjectModel(Employee.name) private EmployeeModel: Model<Employee>,
-  ) {}
+  ) { }
 
   async create(emp: empInterface) {
     let hashesPass = this.shared.hashPassword(emp.password);
@@ -119,16 +118,16 @@ export class EmpService {
       let empData: empInterface[] = await this.getDpt(dpt);
       return `The number of employees in a department are ${empData.length}`;
     } catch (error) {
-        throw new Error(`No employees in the department ${dpt}`);
+      throw new Error(`No employees in the department ${dpt}`);
     }
   }
 
   //Get by perfoemance
 
- async getByPer(per: number) {
-   const empData: empInterface[] = await this.EmployeeModel.find({ performance: { $gte: per } });
-   if (empData.length === 0) throw new Error('no employee with the performance range');
-   return empData;
+  async getByPer(per: number) {
+    const empData: empInterface[] = await this.EmployeeModel.find({ performance: { $gte: per } });
+    if (empData.length === 0) throw new Error('no employee with the performance range');
+    return empData;
   }
 
   //Get top three employees by Sal
@@ -175,7 +174,7 @@ export class EmpService {
 
   //Get average salaries of all the employees
   async getAvg() {
-    const empData: empInterface[] =await this.EmployeeModel.find().exec();
+    const empData: empInterface[] = await this.EmployeeModel.find().exec();
     let sum = 0;
     empData.map((e) => {
       sum += e.salary;
@@ -195,6 +194,7 @@ export class EmpService {
 
   async getFieldSorted(id: number, field: string) {
     if (id !== 1 && id !== -1) throw new Error('Invalid id');
-    const empData: empInterface[] =await this.EmployeeModel.find({[field]: field}).sort({[field]: id});
+    const empData: empInterface[] = await this.EmployeeModel.find().sort({ [field]: id });
     return empData;
+  }
 }
