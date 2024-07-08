@@ -9,16 +9,19 @@ import {
   Put,
   Query,
   ParseIntPipe,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
 
 import { EmpService } from './emp.service';
-import { CreateEmpDto,UpdateEmpDto,LoginDto, dptDto } from './dto/emp.dto';
+import { CreateEmpDto, UpdateEmpDto, LoginDto, dptDto } from './dto/emp.dto';
 import { HttpException, HttpStatus } from '@nestjs/common';
-
+import { Response } from 'express'
+import { JwtGuard } from 'src/auth/auth.guard';
 //CRUD operations
 @Controller('new')
 export class EmpController {
-  constructor(private readonly empService: EmpService) { }
+  constructor(private readonly empService: EmpService) {}
   // CRUD operations
   @Post('create')
   async create(@Body(ValidationPipe) createEmpDto: CreateEmpDto) {
@@ -39,16 +42,10 @@ export class EmpController {
     }
   }
 
-  @Get('/id/:id')
-  async findOne(@Param('id') id: string) {
-    try {
-      return await this.empService.findOne(id);
-    } catch (error) {
-      throw new HttpException('employee doesnt exist', HttpStatus.NOT_FOUND);
-    }
-  }
+  
 
   @Put('/update/:id')
+  @UseGuards(JwtGuard)
   update(@Param('id') id: string, @Body() updateEmpDto: UpdateEmpDto) {
     try {
       return this.empService.update(id, updateEmpDto);
@@ -58,6 +55,7 @@ export class EmpController {
   }
 
   @Delete('/delete/:id')
+  @UseGuards(JwtGuard)
   async remove(@Param('id') id: string) {
     try {
       return await this.empService.remove(id);
@@ -68,17 +66,28 @@ export class EmpController {
 
   // Login Route
   @Post('login')
-  async login(@Body() login: LoginDto) {
+  async login(
+    @Res({passthrough:true}) res:Response,
+    @Body() login: LoginDto,
+  ) {
     try {
-      return await this.empService.login(login);
+      let x = await this.empService.login(login);
+      res.append('jwt_key',x);
+      return 'Login Successful'
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
+  }
+
+  @Post('createmany')
+  createMany(@Body() emp: any){
+    return this.empService.createMany(emp)
   }
 }
 
 //APIs
 @Controller('api')
+@UseGuards(JwtGuard)
 export class EmpApiController {
   constructor(private readonly empService: EmpService) {}
   // Search by name
@@ -89,6 +98,16 @@ export class EmpApiController {
       return await this.empService.search(name);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  //Search By Id
+  @Get('/id/:id')
+  async findOne(@Param('id') id: string) {
+    try {
+      return await this.empService.findOne(id);
+    } catch (error) {
+      throw new HttpException('employee doesnt exist', HttpStatus.NOT_FOUND);
     }
   }
 
@@ -127,8 +146,7 @@ export class EmpApiController {
   getByPer(@Param('per', ParseIntPipe) per: number) {
     try {
       return this.empService.getByPer(per);
-    }
-    catch (error) {
+    } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
@@ -138,8 +156,7 @@ export class EmpApiController {
   topThree() {
     try {
       return this.empService.getTopThree();
-    }
-    catch (error) {
+    } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
@@ -172,8 +189,7 @@ export class EmpApiController {
   ) {
     try {
       return this.empService.getFieldSorted(id, field);
-    }
-    catch (error) {
+    } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }

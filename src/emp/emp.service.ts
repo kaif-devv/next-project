@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { empInterface,loginInterface,updateInterface } from 'src/interfaces';
+import { Injectable, Res } from '@nestjs/common';
+import { empInterface, loginInterface, updateInterface } from 'src/interfaces';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose'; // Import Model from mongoose
 import { Employee } from 'src/Schemas/emp.schema';
@@ -10,16 +10,24 @@ export class EmpService {
   constructor(
     private readonly shared: SharedService,
     @InjectModel(Employee.name) private EmployeeModel: Model<Employee>,
-  ) { }
+  ) {}
 
   async create(emp: empInterface) {
-    let hashesPass = this.shared.hashPassword(emp.password);
-    emp.password = hashesPass;
+    let emailAlreadyExist = await this.EmployeeModel.find({ email: emp.email });
+    if (emailAlreadyExist.length != 0)
+      throw new Error('Employee with this email already exist');
+    let hashedPass = this.shared.hashPassword(emp.password);
+    emp.password = hashedPass;
     //Create an employee in MongoDB
     let newEmp = new this.EmployeeModel(emp);
     await newEmp.save();
     if (!newEmp) throw new Error('Employee not created');
     return { message: 'Employee Created Successfully' };
+  }
+
+  async createMany(emp: empInterface[]) {
+    await this.EmployeeModel.insertMany(emp);
+    return 'Multiple Employees Created';
   }
 
   async findAll() {
@@ -34,6 +42,8 @@ export class EmpService {
   async findOne(id: string) {
     //Find one employee from MongoDB
     let emp = await this.EmployeeModel.findById({ _id: id });
+    console.log(emp);
+    
     if (!emp) {
       throw new Error('Employee not found');
     }
@@ -46,8 +56,7 @@ export class EmpService {
     empBody.password = hashesPass;
     let emp = await this.EmployeeModel.findByIdAndUpdate(
       { _id: id },
-      { $set: empBody },
-      { new: true },
+      { $set: empBody }
     );
     if (!emp) {
       throw new Error('Employee not found');
@@ -61,7 +70,7 @@ export class EmpService {
     if (!employee) {
       throw new Error('Employee not found');
     }
-    await this.EmployeeModel.deleteOne({ _id: id });
+    await this.EmployeeModel.deleteOne({ _id: id })
     return { message: 'Employee deleted successfully' };
   }
 
@@ -73,9 +82,9 @@ export class EmpService {
     let proceed = this.shared.verifyPass(data.password, prevPass);
     let token = this.shared.gToken(data.email);
     if (proceed) {
-      return `Login Success the token is ${token}`;
+      return token;
     } else {
-      return 'Invalid Credentials';
+      throw new Error('Invalid Credentials');
     }
   }
 
@@ -125,14 +134,19 @@ export class EmpService {
   //Get by perfoemance
 
   async getByPer(per: number) {
-    const empData: empInterface[] = await this.EmployeeModel.find({ performance: { $gte: per } });
-    if (empData.length === 0) throw new Error('no employee with the performance range');
+    const empData: empInterface[] = await this.EmployeeModel.find({
+      performance: { $gte: per },
+    });
+    if (empData.length === 0)
+      throw new Error('no employee with the performance range');
     return empData;
   }
 
   //Get top three employees by Sal
   async getTopThree() {
-    const empData: empInterface[] = await this.EmployeeModel.find().sort({ salary: -1 });
+    const empData: empInterface[] = await this.EmployeeModel.find().sort({
+      salary: -1,
+    });
     if (empData.length === 0) throw new Error('No employees found');
     let count = 0;
     for (let i = 2; i < empData.length; i++) {
@@ -186,7 +200,9 @@ export class EmpService {
   //Get Paginated
 
   async getPaginated(page: number) {
-    const empData: empInterface[] = await this.EmployeeModel.find().limit(3).skip(3 * (page - 1));
+    const empData: empInterface[] = await this.EmployeeModel.find()
+      .limit(3)
+      .skip(3 * (page - 1));
     return empData;
   }
 
@@ -194,7 +210,9 @@ export class EmpService {
 
   async getFieldSorted(id: number, field: string) {
     if (id !== 1 && id !== -1) throw new Error('Invalid id');
-    const empData: empInterface[] = await this.EmployeeModel.find().sort({ [field]: id });
+    const empData: empInterface[] = await this.EmployeeModel.find().sort({
+      [field]: id,
+    });
     return empData;
   }
 }
