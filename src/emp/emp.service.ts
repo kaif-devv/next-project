@@ -26,7 +26,7 @@ export class EmpService {
     if (!newEmp) throw new Error('Employee not created');
     return { message: 'Employee Created Successfully' };
   }
-
+  //Create Many Employees
   async createMany(emp: empInterface[]) {
     await this.EmployeeModel.insertMany(emp);
     return 'Multiple Employees Created';
@@ -65,7 +65,7 @@ export class EmpService {
     let current = await this.EmployeeModel.findById({ _id: id });
     let history: empHistoryInterface = {
       EmpId: current._id,
-      updatedOn: new Date(),
+      updatedOn: new Date().toISOString(),
     };
     Object.keys(empBody).forEach((key) => {
       history[key] = {
@@ -244,5 +244,32 @@ export class EmpService {
     return await this.HistoryModel.findOne({ EmpId: id }).sort({
       updatedOn: -1,
     });
+  }
+
+  async updateMany(emp) {
+    let x = emp.ids;
+    let y = []
+    for (let i = 0; i < x.length; i++) {
+      let current = await this.EmployeeModel.findById({ _id: x[i] });
+      if(!current){
+        y.push(x[i]);
+        continue;
+      }      
+      let history: empHistoryInterface = {
+        EmpId: current._id,
+        updatedOn: new Date().toISOString(),
+      };
+      Object.keys(emp).forEach((key) => {
+        history[key] = {
+          prev: current[key],
+          new: emp[key],
+        };
+      });
+      let newHistory = new this.HistoryModel(history);
+      await newHistory.save();
+      await this.EmployeeModel.findByIdAndUpdate({ _id: x[i] }, { $set: emp });
+    }
+    if(y.length!==0) return `Partial Employees updated, Unable to update the employees of ids: ${y}`
+    return 'Multiple Employees Updated';
   }
 }

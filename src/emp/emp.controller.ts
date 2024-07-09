@@ -16,7 +16,7 @@ import {
 import { EmpService } from './emp.service';
 import { CreateEmpDto, UpdateEmpDto, LoginDto, dptDto } from './dto/emp.dto';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { Response } from 'express'
+import { Response } from 'express';
 import { JwtGuard } from 'src/auth/auth.guard';
 //CRUD operations
 @Controller('new')
@@ -42,8 +42,6 @@ export class EmpController {
     }
   }
 
-  
-
   @Put('/update/:id')
   @UseGuards(JwtGuard)
   async update(@Param('id') id: string, @Body() updateEmpDto: UpdateEmpDto) {
@@ -67,26 +65,31 @@ export class EmpController {
   // Login Route
   @Post('login')
   async login(
-    @Res({passthrough:true}) res:Response,
+    @Res({ passthrough: true }) res: Response,
     @Body() login: LoginDto,
   ) {
     try {
       let x = await this.empService.login(login);
-      res.append('jwt_key',x);
-      return 'Login Successful'
+      res.append('jwt_key', x);
+      return 'Login Successful';
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
   @Post('createmany')
-  createMany(@Body() emp: any){
-    return this.empService.createMany(emp)
+  createMany(@Body() emp: any) {
+    return this.empService.createMany(emp);
   }
 
-  @Get('history/:id')
-  getHistory(@Param('id') id:string){
-    return this.empService.getHistory(id);
+   @Put('updatemany')
+   async updateMany(@Body() emp: any) {
+    try {
+      return await this.empService.updateMany(emp);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+   
   }
 }
 
@@ -198,4 +201,10 @@ export class EmpApiController {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
+  //Get History
+  @Get('history/:id')
+  getHistory(@Param('id') id: string) {
+    return this.empService.getHistory(id);
+  }
+
 }
