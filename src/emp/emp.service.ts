@@ -4,12 +4,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose'; // Import Model from mongoose
 import { Employee } from 'src/Schemas/emp.schema';
 import { SharedService } from 'src/shared/shared.service';
-
+import { History } from 'src/Schemas/emp.schema';
+import { empHistoryInterface } from 'src/interfaces';
 @Injectable()
 export class EmpService {
   constructor(
     private readonly shared: SharedService,
     @InjectModel(Employee.name) private EmployeeModel: Model<Employee>,
+    @InjectModel(History.name) private HistoryModel: Model<History>,
   ) {}
 
   async create(emp: empInterface) {
@@ -43,7 +45,7 @@ export class EmpService {
     //Find one employee from MongoDB
     let emp = await this.EmployeeModel.findById({ _id: id });
     console.log(emp);
-    
+
     if (!emp) {
       throw new Error('Employee not found');
     }
@@ -51,16 +53,68 @@ export class EmpService {
   }
 
   async update(id: string, empBody: updateInterface) {
-    //Update one employee from MongoDB
-    let hashesPass = this.shared.hashPassword(empBody.password);
-    empBody.password = hashesPass;
-    let emp = await this.EmployeeModel.findByIdAndUpdate(
-      { _id: id },
-      { $set: empBody }
-    );
-    if (!emp) {
+    //verification where to see Employee Exists or Not
+
+    let x = this.EmployeeModel.findById({ _id: id });
+    if (!x) {
       throw new Error('Employee not found');
     }
+
+    //Create an employee history in MongoDB
+
+    let current = await this.EmployeeModel.findById({ _id: id });
+    let history: empHistoryInterface = {
+      EmpId: current._id,
+      updatedOn: new Date(),
+    };
+    if (empBody.name) {
+      history.name = { prevName: current.name, newName: empBody.name };
+    }
+    if (empBody.age) {
+      history.age = { prevAge: current.age, newAge: empBody.age };
+    }
+    if (empBody.email) {
+      history.email = {
+        prevEmail: current.email,
+        newEmail: empBody.email,
+      };
+    }
+    if (empBody.department) {
+      history.department = {
+        prevDepartment: current.department,
+        newDepartment: empBody.department,
+      };
+    }
+    if (empBody.position) {
+      history.position = {
+        prevPosition: current.position,
+        newPosition: empBody.position,
+      };
+    }
+    if (empBody.performance) {
+      history.performance = {
+        prevPerformance: current.performance,
+        newPerformance: empBody.performance,
+      };
+    }
+    if (empBody.salary) {
+      history.salary = {
+        prevSalary: current.salary,
+        newSalary: empBody.salary,
+      };
+    }
+    console.log(history);
+    //Update Employee
+    let newHistory = new this.HistoryModel(history);
+    await newHistory.save();
+    if (empBody.password) {
+      let hashesPass = this.shared.hashPassword(empBody.password);
+      empBody.password = hashesPass;
+    }
+    let emp = await this.EmployeeModel.findByIdAndUpdate(
+      { _id: id },
+      { $set: empBody },
+    );
     return `The Data of ${emp.name} has been updated successfully`;
   }
 
@@ -70,7 +124,7 @@ export class EmpService {
     if (!employee) {
       throw new Error('Employee not found');
     }
-    await this.EmployeeModel.deleteOne({ _id: id })
+    await this.EmployeeModel.deleteOne({ _id: id });
     return { message: 'Employee deleted successfully' };
   }
 
@@ -214,5 +268,11 @@ export class EmpService {
       [field]: id,
     });
     return empData;
+  }
+
+  async getHistory(id: string) {
+    return await this.HistoryModel.findOne({ EmpId: id }).sort({
+      updatedOn: -1,
+    });
   }
 }

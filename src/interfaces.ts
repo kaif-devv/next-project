@@ -69,3 +69,39 @@ export interface historyInterface  {
   };
 };
 
+export interface empHistoryInterface  {
+  EmpId: any;
+  updatedOn: any;
+  name?: {
+    prevName: string;
+    newName: string;
+  };
+  age?: {
+    prevAge: number;
+    newAge: number;
+  };
+  email?: {
+    prevEmail: string;
+    newEmail: string;
+  };
+  position?: {
+    prevPosition: string;
+    newPosition: string;
+  };
+  salary?: {
+    prevSalary: number;
+    newSalary: number;
+  };
+  department?: {
+    prevDepartment: string;
+    newDepartment: string;
+  };
+  performance?: {
+    prevPerformance:  number;
+    newPerformance:  number;
+  };
+  password?: {
+    prevpassword: any;
+    newpassword: any;
+  };
+};

@@ -83,6 +83,11 @@ export class EmpController {
   createMany(@Body() emp: any){
     return this.empService.createMany(emp)
   }
+
+  @Get('history/:id')
+  getHistory(@Param('id') id:string){
+    return this.empService.getHistory(id);
+  }
 }
 
 //APIs
