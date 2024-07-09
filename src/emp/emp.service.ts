@@ -35,7 +35,7 @@ export class EmpService {
   async findAll() {
     //Find all employees from MongoDB
     let emp = await this.EmployeeModel.find().exec();
-    if (!emp) {
+    if (emp.length == 0) {
       throw new Error('No employees found');
     }
     return emp;
@@ -55,55 +55,25 @@ export class EmpService {
   async update(id: string, empBody: updateInterface) {
     //verification where to see Employee Exists or Not
 
-    let x = this.EmployeeModel.findById({ _id: id });
-    if (!x) {
-      throw new Error('Employee not found');
+    let x = await this.EmployeeModel.find({ _id: id }).exec();
+    console.log('console', x);
+    if (x.length === 0) {
+      throw new Error('Employee with that ID not found');
     }
 
     //Create an employee history in MongoDB
-
     let current = await this.EmployeeModel.findById({ _id: id });
     let history: empHistoryInterface = {
       EmpId: current._id,
       updatedOn: new Date(),
     };
-    if (empBody.name) {
-      history.name = { prevName: current.name, newName: empBody.name };
-    }
-    if (empBody.age) {
-      history.age = { prevAge: current.age, newAge: empBody.age };
-    }
-    if (empBody.email) {
-      history.email = {
-        prevEmail: current.email,
-        newEmail: empBody.email,
+    Object.keys(empBody).forEach((key) => {
+      history[key] = {
+        prev: current[key],
+        new: empBody[key],
       };
-    }
-    if (empBody.department) {
-      history.department = {
-        prevDepartment: current.department,
-        newDepartment: empBody.department,
-      };
-    }
-    if (empBody.position) {
-      history.position = {
-        prevPosition: current.position,
-        newPosition: empBody.position,
-      };
-    }
-    if (empBody.performance) {
-      history.performance = {
-        prevPerformance: current.performance,
-        newPerformance: empBody.performance,
-      };
-    }
-    if (empBody.salary) {
-      history.salary = {
-        prevSalary: current.salary,
-        newSalary: empBody.salary,
-      };
-    }
-    console.log(history);
+    });
+
     //Update Employee
     let newHistory = new this.HistoryModel(history);
     await newHistory.save();

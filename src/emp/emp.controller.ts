@@ -46,11 +46,11 @@ export class EmpController {
 
   @Put('/update/:id')
   @UseGuards(JwtGuard)
-  update(@Param('id') id: string, @Body() updateEmpDto: UpdateEmpDto) {
+  async update(@Param('id') id: string, @Body() updateEmpDto: UpdateEmpDto) {
     try {
-      return this.empService.update(id, updateEmpDto);
+      return await this.empService.update(id, updateEmpDto);
     } catch (error) {
-      return new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 

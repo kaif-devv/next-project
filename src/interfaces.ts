@@ -73,35 +73,35 @@ export interface empHistoryInterface  {
   EmpId: any;
   updatedOn: any;
   name?: {
-    prevName: string;
-    newName: string;
+    prev: string;
+    new: string;
   };
   age?: {
-    prevAge: number;
-    newAge: number;
+    prev: number;
+    new: number;
   };
   email?: {
-    prevEmail: string;
-    newEmail: string;
+    prev: string;
+    new: string;
   };
   position?: {
-    prevPosition: string;
-    newPosition: string;
+    prev: string;
+    new: string;
   };
   salary?: {
-    prevSalary: number;
-    newSalary: number;
+    prev: number;
+    new: number;
   };
   department?: {
-    prevDepartment: string;
-    newDepartment: string;
+    prev: string;
+    new: string;
   };
   performance?: {
-    prevPerformance:  number;
-    newPerformance:  number;
+    prev:  number;
+    new:  number;
   };
   password?: {
-    prevpassword: any;
-    newpassword: any;
+    prev: any;
+    new: any;
   };
 };

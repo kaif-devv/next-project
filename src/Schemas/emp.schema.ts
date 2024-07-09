@@ -31,44 +31,44 @@ export class History {
   updatedOn: Date;
 
   @Prop(raw({
-    prevName: { type: String },
-    newName: { type: String }
+    prev: { type: String },
+    new: { type: String }
   }))
   name: Record<string, any>;
 
   @Prop(raw({
-    prevAge: { type: Number },
-    newAge: { type: Number }
+    prev: { type: Number },
+    new: { type: Number }
   }))
   age: Record<string, any>;
 
   @Prop(raw({
-    prevEmail: { type: String },
-    newEmail: { type: String }
+    prev: { type: String },
+    new: { type: String }
   }))
   email: Record<string, any>;
 
   @Prop(raw({
-    prevPosition: { type: String },
-    newPosition: { type: String }
+    prev: { type: String },
+    new: { type: String }
   }))
   position: Record<string, any>;
 
   @Prop(raw({
-    prevSalary: { type: Number },
-    newSalary: { type: Number }
+    prev: { type: Number },
+    new: { type: Number }
   }))
   salary: Record<string, any>;
 
   @Prop(raw({
-    prevDepartment: { type: String },
-    newDepartment: { type: String }
+    prev: { type: String },
+    new: { type: String }
   }))
   department: Record<string, any>;
   
   @Prop(raw({
-    prevPerformance: { type: Number },
-    newPerformance: { type: Number }
+    prev: { type: Number },
+    new: { type: Number }
   }))
   performance: Record<string, any>;
 }
