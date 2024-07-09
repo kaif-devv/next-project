@@ -18,6 +18,8 @@ import { CreateEmpDto, UpdateEmpDto, LoginDto, dptDto } from './dto/emp.dto';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 import { JwtGuard } from 'src/auth/auth.guard';
+import * as path from 'path';
+import * as fs from 'fs';
 //CRUD operations
 @Controller('new')
 export class EmpController {
@@ -82,20 +84,19 @@ export class EmpController {
     return this.empService.createMany(emp);
   }
 
-   @Put('updatemany')
-   async updateMany(@Body() emp: any) {
+  @Put('updatemany')
+  async updateMany(@Body() emp: any) {
     try {
       return await this.empService.updateMany(emp);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
-   
   }
 }
 
 //APIs
 @Controller('api')
-@UseGuards(JwtGuard)
+// @UseGuards(JwtGuard)
 export class EmpApiController {
   constructor(private readonly empService: EmpService) {}
   // Search by name
@@ -175,6 +176,14 @@ export class EmpApiController {
     return this.empService.avgSal();
   }
 
+  @Get('/csv')
+  async getCsv(@Res() res: Response) {
+    let downloadPath: string = path.join(__dirname, '../../DATA/report.csv');
+    let csv = await this.empService.getCsv();
+    fs.writeFileSync(downloadPath, csv)
+     res.download(downloadPath);
+  }
+
   //Get average and total salary of all the employees
 
   @Get('/average')
@@ -206,5 +215,4 @@ export class EmpApiController {
   getHistory(@Param('id') id: string) {
     return this.empService.getHistory(id);
   }
-
 }

@@ -6,6 +6,8 @@ import { Employee } from 'src/Schemas/emp.schema';
 import { SharedService } from 'src/shared/shared.service';
 import { History } from 'src/Schemas/emp.schema';
 import { empHistoryInterface } from 'src/interfaces';
+import * as csvJSON from 'csvjson';
+import * as path from 'path';
 @Injectable()
 export class EmpService {
   constructor(
@@ -239,6 +241,43 @@ export class EmpService {
     });
     return empData;
   }
+
+  //Generate a Csv
+async getCsv(){
+    const empData: empInterface[] = await this.EmployeeModel.find().exec();
+    const empJSON: empInterface[] = empData;
+    const dptObj: { [key: string]: number[] } = {};
+    empJSON.map((e: { department: string }) => {
+      dptObj[e.department] = [];
+    });
+
+    empJSON.map((e: { department: string; salary: any }) => {
+      dptObj[e.department].push(e.salary);
+    });
+    let csvObj: {
+      department: string;
+      totalExpenditure: number;
+      averageSal: number;
+    }[] = [];
+
+    Object.keys(dptObj).forEach((key) => {
+      const salaries: number[] = dptObj[key];
+      let sum = 0;
+      for (let i = 0; i < salaries.length; i++) {
+        sum += salaries[i];
+      }
+      let average = sum / salaries.length;
+      csvObj.push({
+        department: key,
+        totalExpenditure: sum,
+        averageSal: average,
+      });
+    });
+    const csvData = csvJSON.toCSV(JSON.stringify(csvObj), { headers: 'key' });
+    return csvData;
+  
+  
+}
 
   async getHistory(id: string) {
     return await this.HistoryModel.findOne({ EmpId: id }).sort({
