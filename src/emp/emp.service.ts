@@ -1,13 +1,12 @@
 import { Injectable, Res } from '@nestjs/common';
 import { empInterface, loginInterface, updateInterface } from 'src/interfaces';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose'; // Import Model from mongoose
+import { Model } from 'mongoose';
 import { Employee } from 'src/Schemas/emp.schema';
 import { SharedService } from 'src/shared/shared.service';
 import { History } from 'src/Schemas/emp.schema';
 import { empHistoryInterface } from 'src/interfaces';
 import * as csvJSON from 'csvjson';
-import * as path from 'path';
 @Injectable()
 export class EmpService {
   constructor(
@@ -126,14 +125,16 @@ export class EmpService {
 
   //Get minimum and maximum salary for the department
   async getDptSal(dpt: string) {
-    const empData: empInterface[] = await this.EmployeeModel.find({
-      department: dpt,
-    });
-    if (empData.length === 0) throw new Error('No employees in the department');
-    empData.sort((a, b) => b.salary - a.salary);
-    let maxSal: number = empData[0].salary;
-    let minSal: number = empData[empData.length - 1].salary;
-    return `The max and min salary of department ${dpt} is ${maxSal} and ${minSal}`;
+    let maxEmp = await this.EmployeeModel.find({ department: dpt })
+      .sort({ salary: -1 })
+      .limit(1);
+    let minEmp = await this.EmployeeModel.find({ department: dpt })
+      .sort({ salary: 1 })
+      .limit(1);
+    if (maxEmp.length === 0 || minEmp.length === 0) {
+      throw new Error('No employees in the department');
+    }
+    return `The max and min salary of department ${dpt} is ${maxEmp[0].salary} and ${minEmp[0].salary}`;
   }
 
   //All Employees in the department
@@ -148,16 +149,12 @@ export class EmpService {
 
   //No of emp in DPT
   async getDptCount(dpt: string) {
-    try {
-      //using the previously defined getDpt method
-      let empData: empInterface[] = await this.getDpt(dpt);
-      return `The number of employees in a department are ${empData.length}`;
-    } catch (error) {
-      throw new Error(`No employees in the department ${dpt}`);
-    }
+    let empCount = await this.getDpt(dpt).then((data) => data.length);
+    if (empCount === 0) throw new Error('No employees in the department');
+    return `The number of employees in the department ${dpt} is ${empCount}`;
   }
 
-  //Get by perfoemance
+  //Get by performance
 
   async getByPer(per: number) {
     const empData: empInterface[] = await this.EmployeeModel.find({
@@ -188,47 +185,53 @@ export class EmpService {
 
   //Get avg sal of all emp in dpt
   async avgSal() {
-    const empData: empInterface[] = await this.EmployeeModel.find().exec();
-
-    let empJSON = empData;
-    const dptObj: { [key: string]: number[] } = {}; // Add index signature to dptObj
-    empJSON.map((e: { department: string }) => {
-      dptObj[e.department] = [];
-    });
-    empJSON.map((e: { department: string; salary: number }) => {
-      dptObj[e.department].push(e.salary);
-    });
-
-    let responseString: string = '';
-    Object.keys(dptObj).forEach((key) => {
-      const salaries: number[] = dptObj[key];
-      let sum = 0;
-      for (let i = 0; i < salaries.length; i++) {
-        sum += salaries[i];
-      }
-      let avg: number = sum / salaries.length;
-      responseString += `The average sal of the department ${key} is ${avg}\n`;
-    });
-    return responseString;
+    const empData: empInterface[] = await this.EmployeeModel.aggregate([
+      {
+        $group: {
+          _id: '$department',
+          avgSal: { $avg: '$salary' },
+        },
+      },
+      {
+        $project: {
+          avgSal: { $round: ['$avgSal', 2] },
+        },
+      },
+    ]);
+    if (empData.length === 0) throw new Error('No employees found');
+    return empData;
   }
 
-  //Get average salaries of all the employees
+  //Get average and total salaries of all the employees
   async getAvg() {
-    const empData: empInterface[] = await this.EmployeeModel.find().exec();
-    let sum = 0;
-    empData.map((e) => {
-      sum += e.salary;
-    });
-    let num: number = empData.length;
-    return `The total and average salary of all the employees is ${sum} and ${(sum / num).toFixed(2)}`;
+    const empAvg = await this.EmployeeModel.aggregate(
+      [
+        {
+          $group: {
+            _id: null,
+            avgSal: { $avg: '$salary' },
+            totalSal: { $sum: '$salary' },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            avgSal: { $round: ['$avgSal', 2] },
+            totalSal: 1,
+          },
+        },
+      ],
+    );
+    if (empAvg.length === 0) throw new Error('No employees found');
+    return empAvg;
   }
 
   //Get Paginated
 
   async getPaginated(page: number) {
     const empData: empInterface[] = await this.EmployeeModel.find()
-      .limit(3)
-      .skip(3 * (page - 1));
+    .skip(2 * (page - 1))
+    .limit(2)
     return empData;
   }
 
@@ -243,7 +246,7 @@ export class EmpService {
   }
 
   //Generate a Csv
-async getCsv(){
+  async getCsv() {
     const empData: empInterface[] = await this.EmployeeModel.find().exec();
     const empJSON: empInterface[] = empData;
     const dptObj: { [key: string]: number[] } = {};
@@ -275,9 +278,7 @@ async getCsv(){
     });
     const csvData = csvJSON.toCSV(JSON.stringify(csvObj), { headers: 'key' });
     return csvData;
-  
-  
-}
+  }
 
   async getHistory(id: string) {
     return await this.HistoryModel.findOne({ EmpId: id }).sort({
@@ -287,13 +288,13 @@ async getCsv(){
 
   async updateMany(emp) {
     let x = emp.ids;
-    let y = []
+    let y = [];
     for (let i = 0; i < x.length; i++) {
       let current = await this.EmployeeModel.findById({ _id: x[i] });
-      if(!current){
+      if (!current) {
         y.push(x[i]);
         continue;
-      }      
+      }
       let history: empHistoryInterface = {
         EmpId: current._id,
         updatedOn: new Date().toISOString(),
@@ -308,7 +309,8 @@ async getCsv(){
       await newHistory.save();
       await this.EmployeeModel.findByIdAndUpdate({ _id: x[i] }, { $set: emp });
     }
-    if(y.length!==0) return `Partial Employees updated, Unable to update the employees of ids: ${y}`
+    if (y.length !== 0)
+      return `Partial Employees updated, Unable to update the employees of ids: ${y}`;
     return 'Multiple Employees Updated';
   }
 }

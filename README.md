@@ -71,15 +71,3 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
-
-
-////
-
-auto rename tag 
-bracket pair color DLW
-
-bracket pair colorisation
-
-inline fold
-
-material icon theme

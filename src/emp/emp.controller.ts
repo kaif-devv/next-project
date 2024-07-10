@@ -122,9 +122,9 @@ export class EmpApiController {
 
   // MinMax sal of dpt
   @Get('/dptsal')
-  getSal(@Query(ValidationPipe) query: dptDto) {
+  async getSal(@Query(ValidationPipe) query: dptDto) {
     try {
-      return this.empService.getDptSal(query.department);
+      return await this.empService.getDptSal(query.department);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
@@ -132,9 +132,9 @@ export class EmpApiController {
 
   // Employees in the department
   @Get('/dpt')
-  getDpt(@Query(ValidationPipe) query: dptDto) {
+  async getDpt(@Query(ValidationPipe) query: dptDto) {
     try {
-      return this.empService.getDpt(query.department);
+      return await this.empService.getDpt(query.department);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
@@ -180,15 +180,19 @@ export class EmpApiController {
   async getCsv(@Res() res: Response) {
     let downloadPath: string = path.join(__dirname, '../../DATA/report.csv');
     let csv = await this.empService.getCsv();
-    fs.writeFileSync(downloadPath, csv)
-     res.download(downloadPath);
+    fs.writeFileSync(downloadPath, csv);
+    res.download(downloadPath);
   }
 
   //Get average and total salary of all the employees
 
   @Get('/average')
-  getAvg() {
-    return this.empService.getAvg();
+  async getAvg() {
+    try {
+      return await this.empService.getAvg();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 
   //Get Paginated employee data
