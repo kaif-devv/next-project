@@ -27,7 +27,8 @@ export class EmpService {
     if (!newEmp) throw new Error('Employee not created');
     return { message: 'Employee Created Successfully' };
   }
-  //Create Many Employees
+
+    //Create Many Employees
   async createMany(emp: empInterface[]) {
     await this.EmployeeModel.insertMany(emp);
     return 'Multiple Employees Created';
@@ -204,24 +205,22 @@ export class EmpService {
 
   //Get average and total salaries of all the employees
   async getAvg() {
-    const empAvg = await this.EmployeeModel.aggregate(
-      [
-        {
-          $group: {
-            _id: null,
-            avgSal: { $avg: '$salary' },
-            totalSal: { $sum: '$salary' },
-          },
+    const empAvg = await this.EmployeeModel.aggregate([
+      {
+        $group: {
+          _id: null,
+          avgSal: { $avg: '$salary' },
+          totalSal: { $sum: '$salary' },
         },
-        {
-          $project: {
-            _id: 0,
-            avgSal: { $round: ['$avgSal', 2] },
-            totalSal: 1,
-          },
+      },
+      {
+        $project: {
+          _id: 0,
+          avgSal: { $round: ['$avgSal', 2] },
+          totalSal: 1,
         },
-      ],
-    );
+      },
+    ]);
     if (empAvg.length === 0) throw new Error('No employees found');
     return empAvg;
   }
@@ -230,8 +229,8 @@ export class EmpService {
 
   async getPaginated(page: number) {
     const empData: empInterface[] = await this.EmployeeModel.find()
-    .skip(2 * (page - 1))
-    .limit(2)
+      .skip(2 * (page - 1))
+      .limit(2);
     return empData;
   }
 
@@ -247,36 +246,26 @@ export class EmpService {
 
   //Generate a Csv
   async getCsv() {
-    const empData: empInterface[] = await this.EmployeeModel.find().exec();
-    const empJSON: empInterface[] = empData;
-    const dptObj: { [key: string]: number[] } = {};
-    empJSON.map((e: { department: string }) => {
-      dptObj[e.department] = [];
-    });
-
-    empJSON.map((e: { department: string; salary: any }) => {
-      dptObj[e.department].push(e.salary);
-    });
-    let csvObj: {
-      department: string;
-      totalExpenditure: number;
-      averageSal: number;
-    }[] = [];
-
-    Object.keys(dptObj).forEach((key) => {
-      const salaries: number[] = dptObj[key];
-      let sum = 0;
-      for (let i = 0; i < salaries.length; i++) {
-        sum += salaries[i];
-      }
-      let average = sum / salaries.length;
-      csvObj.push({
-        department: key,
-        totalExpenditure: sum,
-        averageSal: average,
-      });
-    });
-    const csvData = csvJSON.toCSV(JSON.stringify(csvObj), { headers: 'key' });
+    const empData: empInterface[] = await this.EmployeeModel.aggregate([
+      {
+        $group: {
+          _id: '$department',
+          department: { $first: '$department' },
+          totalExpenditure: { $sum: '$salary' },
+          avgSal: { $avg: '$salary' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          // totalExpenditure: 1,
+          // avgSal: 1,
+        },
+      },
+    ]);
+    console.log(empData);
+    if (empData.length === 0) throw new Error('No employees found');
+    const csvData = csvJSON.toCSV(JSON.stringify(empData), { headers: 'key' });
     return csvData;
   }
 
