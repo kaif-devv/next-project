@@ -13,31 +13,6 @@ export class SharedService {
     return `shared data is ${x}`;
   }
 
-  dataPath() {
-    const jsonFilePath = path.join(__dirname, '../../DATA/myFiles.json');
-    return jsonFilePath;
-  }
-
-  historyPath(){
-    const historyPath = path.join(__dirname, '../../DATA/history.json');
-    return historyPath;
-  }
-
-  // Accessing Json Data
-  getJson() {
-    
-      const jsonFilePath = path.join(__dirname, '../../DATA/myFiles.json');
-      const empJSON: empInterface[] = require(jsonFilePath);
-      return empJSON;
-  }
-
-  getHistory() {
-    
-    const history = path.join(__dirname, '../../DATA/history.json');
-    const historyJSON: historyInterface[] = require(history);
-    return historyJSON;
-}
-
   //Bcrypting password
 
   hashPassword(x: string): string {
