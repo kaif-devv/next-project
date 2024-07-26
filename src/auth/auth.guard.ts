@@ -8,6 +8,8 @@ import {
 import { Observable } from 'rxjs';
 import * as jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
+import { Public } from './public.decorator';
+
 dotenv.config();
 
 @Injectable()
@@ -17,6 +19,9 @@ export class JwtGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
+    if(Public) {
+      return true
+    }
     let flag = false;
     // Accessing a header value
     const token = request.headers['jwt_key'];

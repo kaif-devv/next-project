@@ -20,8 +20,10 @@ import { Response } from 'express';
 import { JwtGuard } from 'src/auth/auth.guard';
 import * as path from 'path';
 import * as fs from 'fs';
+import { Public } from 'src/auth/public.decorator';
 //CRUD operations
 @Controller('new')
+@Public()
 export class EmpController {
   constructor(private readonly empService: EmpService) {}
   // CRUD operations
@@ -34,7 +36,6 @@ export class EmpController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
-
   @Get('all')
   async findAll() {
     try {
@@ -96,7 +97,6 @@ export class EmpController {
 
 //APIs
 @Controller('api')
-// @UseGuards(JwtGuard)
 export class EmpApiController {
   constructor(private readonly empService: EmpService) {}
   // Search by name
