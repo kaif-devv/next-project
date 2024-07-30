@@ -106,7 +106,13 @@ export class EmpService {
     if (!emp) throw new Error('Invalid email address');
     let prevPass = emp.password;
     let proceed = this.shared.verifyPass(data.password, prevPass);
-    let token = this.shared.gToken(data.email);
+    let payload ={
+      email: emp.email,
+      name: emp.name,
+      department: emp.department,
+      role: emp.role,
+    }
+    let token = this.shared.gToken(payload);
     if (proceed) {
       return token;
     } else {

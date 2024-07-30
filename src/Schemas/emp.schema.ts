@@ -20,6 +20,8 @@ export class Employee {
   department: string;
   @Prop()
   performance: number;
+  @Prop()
+  role: string;
 }
 
 @Schema()

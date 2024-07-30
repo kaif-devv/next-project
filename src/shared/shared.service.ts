@@ -29,9 +29,9 @@ export class SharedService {
   }
 
   //generate Token
-  gToken(email: string) {
+  gToken(data) {
     try {
-      let i = jwt.sign({ email: email }, process.env.JWT_SECRET_KEY);
+      let i = jwt.sign( data , process.env.JWT_SECRET_KEY);
       return i;
     } catch (error) {
       return `Error Occured: ${error}`;
