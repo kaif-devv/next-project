@@ -1,4 +1,5 @@
-import { Prop, Schema, SchemaFactory,raw } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
+import { Department, Role, Position } from 'src/interfaces';
 @Schema()
 //Employee Schema
 export class Employee {
@@ -11,17 +12,17 @@ export class Employee {
   @Prop()
   id: number;
   @Prop()
-  position: string;
+  position: Position;
   @Prop()
   salary: number;
   @Prop()
   password: string;
   @Prop()
-  department: string;
+  department: Department;
   @Prop()
   performance: number;
   @Prop()
-  role: string;
+  role: Role;
 }
 
 @Schema()
@@ -32,46 +33,60 @@ export class History {
   @Prop()
   updatedOn: Date;
 
-  @Prop(raw({
-    prev: { type: String },
-    new: { type: String }
-  }))
+  @Prop(
+    raw({
+      prev: { type: String },
+      new: { type: String },
+    }),
+  )
   name: Record<string, any>;
 
-  @Prop(raw({
-    prev: { type: Number },
-    new: { type: Number }
-  }))
+  @Prop(
+    raw({
+      prev: { type: Number },
+      new: { type: Number },
+    }),
+  )
   age: Record<string, any>;
 
-  @Prop(raw({
-    prev: { type: String },
-    new: { type: String }
-  }))
+  @Prop(
+    raw({
+      prev: { type: String },
+      new: { type: String },
+    }),
+  )
   email: Record<string, any>;
 
-  @Prop(raw({
-    prev: { type: String },
-    new: { type: String }
-  }))
-  position: Record<string, any>;
+  @Prop(
+    raw({
+      prev: { type: String },
+      new: { type: String },
+    }),
+  )
+  position: Record<Position, any>;
 
-  @Prop(raw({
-    prev: { type: Number },
-    new: { type: Number }
-  }))
+  @Prop(
+    raw({
+      prev: { type: Number },
+      new: { type: Number },
+    }),
+  )
   salary: Record<string, any>;
 
-  @Prop(raw({
-    prev: { type: String },
-    new: { type: String }
-  }))
-  department: Record<string, any>;
-  
-  @Prop(raw({
-    prev: { type: Number },
-    new: { type: Number }
-  }))
+  @Prop(
+    raw({
+      prev: { type: String },
+      new: { type: String },
+    }),
+  )
+  department: Record<Department, any>;
+
+  @Prop(
+    raw({
+      prev: { type: Number },
+      new: { type: Number },
+    }),
+  )
   performance: Record<string, any>;
 }
 

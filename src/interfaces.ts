@@ -105,3 +105,19 @@ export interface empHistoryInterface  {
     new: any;
   };
 };
+
+export enum Role {
+  Admin = 'Admin',
+  Employee = 'Employee',
+}
+export enum Department {
+  frontend = 'frontend',
+  backend = 'backend',
+  fullstack = 'fullstack',
+  devops = 'devops',
+}
+export enum Position {
+  SDE1 = 'SDE1',
+  SDE2 = 'SDE2',
+  SDE3 = 'SDE3',
+}

@@ -21,13 +21,14 @@ import { JwtGuard } from 'src/auth/auth.guard';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Public } from 'src/auth/public.decorator';
+import { Roles } from 'src/auth/roles.decorator';
 //CRUD operations
 @Controller('new')
-@Public()
 export class EmpController {
   constructor(private readonly empService: EmpService) {}
   // CRUD operations
   @Post('create')
+  @Public()
   async create(@Body(ValidationPipe) createEmpDto: CreateEmpDto) {
     try {
       await this.empService.create(createEmpDto);
@@ -67,6 +68,7 @@ export class EmpController {
 
   // Login Route
   @Post('login')
+  @Public()
   async login(
     @Res({ passthrough: true }) res: Response,
     @Body() login: LoginDto,
